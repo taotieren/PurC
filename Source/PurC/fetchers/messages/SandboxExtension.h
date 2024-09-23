@@ -40,7 +40,7 @@ class Decoder;
 }
 
 namespace PurCFetcher {
-    
+
 class SandboxExtensionImpl;
 
 class SandboxExtension : public RefCounted<SandboxExtension> {
@@ -58,9 +58,10 @@ public:
         Default,
         NoReport
     };
-    
+
     class Handle {
         WTF_MAKE_NONCOPYABLE(Handle);
+
     public:
         Handle();
 #if ENABLE(SANDBOX_EXTENSIONS)
@@ -84,6 +85,7 @@ public:
 
     class HandleArray {
         WTF_MAKE_NONCOPYABLE(HandleArray);
+
     public:
         HandleArray();
         HandleArray(HandleArray&&) = default;
@@ -108,7 +110,7 @@ public:
         Handle m_emptyHandle;
 #endif
     };
-    
+
     static RefPtr<SandboxExtension> create(Handle&&);
     static bool createHandle(const String& path, Type, Handle&);
     static SandboxExtension::HandleArray createReadOnlyHandlesForFiles(ASCIILiteral logLabel, const Vector<String>& paths);
@@ -134,7 +136,7 @@ public:
 
 private:
     explicit SandboxExtension(const Handle&);
-                     
+
 #if ENABLE(SANDBOX_EXTENSIONS)
     mutable std::unique_ptr<SandboxExtensionImpl> m_sandboxExtension;
     size_t m_useCount { 0 };
@@ -145,11 +147,11 @@ private:
 inline SandboxExtension::Handle::Handle() { }
 inline SandboxExtension::Handle::~Handle() { }
 inline void SandboxExtension::Handle::encode(IPC::Encoder&) const { }
-inline std::optional<SandboxExtension::Handle> SandboxExtension::Handle::decode(IPC::Decoder&) { return SandboxExtension::Handle { }; }
+inline std::optional<SandboxExtension::Handle> SandboxExtension::Handle::decode(IPC::Decoder&) { return SandboxExtension::Handle {}; }
 inline SandboxExtension::HandleArray::HandleArray() { }
 inline SandboxExtension::HandleArray::~HandleArray() { }
 inline void SandboxExtension::HandleArray::allocate(size_t) { }
-inline size_t SandboxExtension::HandleArray::size() const { return 0; }    
+inline size_t SandboxExtension::HandleArray::size() const { return 0; }
 inline const SandboxExtension::Handle& SandboxExtension::HandleArray::operator[](size_t) const { return m_emptyHandle; }
 inline SandboxExtension::Handle& SandboxExtension::HandleArray::operator[](size_t) { return m_emptyHandle; }
 inline SandboxExtension::Handle* SandboxExtension::HandleArray::begin() { return &m_emptyHandle; }
@@ -157,13 +159,13 @@ inline SandboxExtension::Handle* SandboxExtension::HandleArray::end() { return &
 inline const SandboxExtension::Handle* SandboxExtension::HandleArray::begin() const { return &m_emptyHandle; }
 inline const SandboxExtension::Handle* SandboxExtension::HandleArray::end() const { return &m_emptyHandle; }
 inline void SandboxExtension::HandleArray::encode(IPC::Encoder&) const { }
-inline auto SandboxExtension::HandleArray::decode(IPC::Decoder&) -> std::optional<HandleArray> { return {{ }}; }
+inline auto SandboxExtension::HandleArray::decode(IPC::Decoder&) -> std::optional<HandleArray> { return std::nullopt; }
 inline RefPtr<SandboxExtension> SandboxExtension::create(Handle&&) { return nullptr; }
 inline bool SandboxExtension::createHandle(const String&, Type, Handle&) { return true; }
-inline SandboxExtension::HandleArray SandboxExtension::createReadOnlyHandlesForFiles(ASCIILiteral, const Vector<String>&) { return { }; }
+inline SandboxExtension::HandleArray SandboxExtension::createReadOnlyHandlesForFiles(ASCIILiteral, const Vector<String>&) { return {}; }
 inline bool SandboxExtension::createHandleWithoutResolvingPath(const String&, Type, Handle&) { return true; }
 inline bool SandboxExtension::createHandleForReadWriteDirectory(const String&, Handle&) { return true; }
-inline String SandboxExtension::createHandleForTemporaryFile(const String& /*prefix*/, Type, Handle&) {return String();}
+inline String SandboxExtension::createHandleForTemporaryFile(const String& /*prefix*/, Type, Handle&) { return String(); }
 inline bool SandboxExtension::createHandleForGenericExtension(ASCIILiteral /*extensionClass*/, Handle&) { return true; }
 inline SandboxExtension::~SandboxExtension() { }
 inline bool SandboxExtension::revoke() { return true; }
