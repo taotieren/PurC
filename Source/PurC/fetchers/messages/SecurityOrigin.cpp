@@ -422,7 +422,10 @@ Ref<SecurityOrigin> SecurityOrigin::createFromString(const String& originString)
 
 Ref<SecurityOrigin> SecurityOrigin::create(const String& protocol, const String& host, std::optional<uint16_t> port)
 {
-    auto origin = create(URL(URL(), protocol + "://" + host + "/"));
+    std::string fullUrl = protocol + "://";
+    fullUrl += host;
+    fullUrl += "/";
+    auto origin = create(URL(URL(), fullUrl));
     if (port && !PurCWTF::isDefaultPortForProtocol(*port, protocol))
         origin->m_data.port = port;
     return origin;
